@@ -1,11 +1,11 @@
 {
 	"id": "custom-math-commands",
 	"name": "Custom Math Commands For Obsidian",
-	"version": "1.0.0",
+	"version": "0.1.0",
 	"minAppVersion": "0.1.0",
 	"description": "Enables the user to define custom math commands on a per-folder basis.",
 	"author": "Anthony Lin, Kanav Madhura",
 	"authorUrl": "https://obsidian.md",
 	"fundingUrl": "https://obsidian.md/pricing",
-	"isDesktopOnly": true
+	"isDesktopOnly": false
 }
