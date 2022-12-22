@@ -1,7 +1,7 @@
 {
-	"name": "obsidian-sample-plugin",
-	"version": "1.0.0",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+	"name": "custom-math-commands",
+	"version": "0.1.0",
+	"description": "Enables the user to define custom math commands on a per-folder basis.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
