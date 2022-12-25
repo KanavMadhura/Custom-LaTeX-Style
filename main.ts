@@ -1,5 +1,6 @@
 import { readFileSync } from 'fs';
 import { Plugin, loadMathJax, FileSystemAdapter, Notice } from 'obsidian';
+import { toFile } from 'engine/parse';
 
 const STYLE_EDITOR_PATH = "style.md"
 const STYLE_PATH = "style.sty"
@@ -17,17 +18,14 @@ export default class MyPlugin extends Plugin {
 			if (!md_exists && !sty_exists) {
 				// Create md file
 				await this.app.vault.adapter.append(STYLE_EDITOR_PATH, template);
-				new Notice("Markdown file created. After desired edits, click the ribbon icon again to generate style file and apply it to MathJax.");
+				new Notice("Markdown file created. After desired edits, click the ribbon icon again to generate style file and apply it to MathJax."); 
 			} else if (!md_exists && sty_exists) {
-				// User must fix the problem
-				new Notice("Please Delete `style.sty` from your vault and restart Obsidian.")
-			} else if (md_exists && !sty_exists) {
-				// Generate sty file based on md file
-				new Notice("Unimplemented!")
-				// Feed sty file to MathJax
-			} else if (md_exists && sty_exists) {
+				new Notice("Uhh...");
+			} else {
 				// Update sty file based on md file
-				new Notice("Unimplemented!")
+				let contents = await this.app.vault.adapter.read(STYLE_EDITOR_PATH);
+				await this.app.vault.adapter.write(STYLE_PATH, toFile(contents));
+				new Notice("Modified `style.sty` file!");
 				// Feed sty file to MathJax
 			}
 			// View md file in Obsidian
