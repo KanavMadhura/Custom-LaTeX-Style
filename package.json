@@ -1,12 +1,13 @@
 {
-	"name": "custom-math-commands",
+	"name": "custom-latex-style",
 	"version": "0.1.0",
-	"description": "Enables the user to define custom math commands on a per-folder basis.",
+	"description": "Enables the user to define a custom global LaTeX style, using only Obsidian.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
-		"version": "node version-bump.mjs && git add manifest.json versions.json"
+		"version": "node version-bump.mjs && git add manifest.json versions.json",
+		"build-engine": "cd ./engine/ps && spago bundle-module --main Parse --to ../parse.js"
 	},
 	"keywords": [],
 	"author": "",
