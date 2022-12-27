@@ -7,7 +7,7 @@
 		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
 		"version": "node version-bump.mjs && git add manifest.json versions.json",
-		"build-engine": "cd ./engine/ps && spago bundle-module --main Parse --to ../parse.js"
+		"build-engine": "cd ./engine && spago bundle-module --main Engine --to engine.js"
 	},
 	"keywords": [],
 	"author": "",

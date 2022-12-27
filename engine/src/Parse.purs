@@ -1,15 +1,10 @@
 module Parse where
 
 import Control.Alt
-import Control.Apply
 import Control.Lazy
-import Control.Monad
 
-import Data.Array (fromFoldable, toUnfoldable)
 import Data.Array.NonEmpty (toArray)
 import Data.Either
-import Data.Functor
-import Data.List (List(..))
 import Data.Traversable
 import Data.Tuple (Tuple, Tuple(..), fst)
 import Data.String.Common (joinWith)
@@ -28,8 +23,7 @@ type ParserS = Parser String
 
 -- Command schemas
 data AtomType = 
-      CommandName
-    | RawParameter  
+      Number  
     | Square
     | Curly
 
@@ -39,47 +33,42 @@ data Multiplicity = Zero | One | KleeneStar | KleenePlus
 data Schema = Schema AtomType Multiplicity
 newtype Schemata = Schemata (Array Schema)
 
-data CommandType = Def | NewCommand | RenewCommand | NewEnvironment | RenewEnvironment
+data CommandType = NewCommand | RenewCommand | NewEnvironment | RenewEnvironment
 
 -- Basic command, with or without optional arguments
-newtype Command = Command {ctype :: CommandType, atoms :: Array Atom}
+newtype Command = Command {ctype :: CommandType, cname :: String, atoms :: Array Atom}
 
 -- Show functions
 instance showAtom :: Show Atom where
-    show (Atom CommandName str) = "\\" <> str
-    show (Atom RawParameter str) = "#" <> str
+    show (Atom Number str) = "[" <> str <> "]"
     show (Atom Square str) = "[" <> str <> "]"
     show (Atom Curly str) = "{" <> str <> "}"
 
 instance showCommandType :: Show CommandType where
-    show Def = "\\def"
     show NewCommand = "\\newcommand"
     show RenewCommand = "\\renewcommand"
     show NewEnvironment = "\\newenvironment"
     show RenewEnvironment = "\\renewenvironment"
 
 instance showCommand :: Show Command where
-    show (Command { ctype: tp, atoms: at }) = show tp <> (fold $ show <$> at)
+    show (Command { ctype: tp, cname: na, atoms: at }) = 
+           show tp 
+        <> "\\"
+        <> na 
+        <> (fold $ show <$> at)
 
 -- Conversion functions
 toCommandTypeName :: CommandType -> Tuple String CommandType
-toCommandTypeName Def = Tuple "\\def" Def
 toCommandTypeName NewCommand = Tuple "\\newcommand" NewCommand
 toCommandTypeName RenewCommand = Tuple "\\renewcommand" RenewCommand
 toCommandTypeName NewEnvironment = Tuple "\\newenvironment" NewEnvironment
 toCommandTypeName RenewEnvironment = Tuple "\\renewenvironment" RenewEnvironment
 
 toSchemata :: CommandType -> Schemata
-toSchemata Def =            Schemata [Schema CommandName One,
-                                      Schema Square KleeneStar, 
-                                      Schema RawParameter KleeneStar, 
-                                      Schema Curly One]
-toSchemata NewCommand =     Schemata [Schema CommandName One,
-                                      Schema Square Zero,
+toSchemata NewCommand =     Schemata [Schema Number Zero,
                                       Schema Square KleeneStar,
                                       Schema Curly One]
-toSchemata NewEnvironment = Schemata [Schema CommandName One,
-                                      Schema Square Zero,
+toSchemata NewEnvironment = Schemata [Schema Number Zero,
                                       Schema Square KleeneStar,
                                       Schema Curly One]
 toSchemata RenewCommand =            toSchemata NewCommand
@@ -130,14 +119,14 @@ parseMultiplicity KleeneStar = many
 parseMultiplicity KleenePlus = \pr -> toArray <$> many1 pr
 
 -- Atomic parsers
-parseAtom :: AtomType -> ParserS Atom
-parseAtom CommandName = let
+parseCommandName :: ParserS String
+parseCommandName = let
     base = string "\\" *> word
-    in Atom CommandName <$>
-        (    base 
-         <|> ((string "{" *> base) <* string "}"))
-parseAtom RawParameter = 
-    Atom RawParameter <$> (string "#" <* word)
+    in      base 
+        <|> ((string "{" *> base) <* string "}")
+
+parseAtom :: AtomType -> ParserS Atom
+parseAtom Number = Atom Number <$> (string "[" *> (singleton <$> digit)) <* string "]"
 parseAtom Square = Atom Square <$> matchDelims '[' ']'
 parseAtom Curly = Atom Curly <$> matchDelims '{' '}'
 
@@ -153,22 +142,22 @@ parseSingleCommand :: ParserS (Tuple String CommandType)
 parseSingleCommand = let
     psc cmd = Tuple <$> (string $ fst $ toCommandTypeName cmd) <*> pure cmd
     in 
-            psc Def 
-        <|> psc NewCommand 
+            psc NewCommand 
         <|> psc RenewCommand 
         <|> psc NewEnvironment 
         <|> psc RenewEnvironment
 
 parseCommand :: ParserS Command
 parseCommand = do
-    Tuple st ct <- parseSingleCommand
+    Tuple _ ct <- parseSingleCommand
+    na <- parseCommandName
     at <- join <$> (parseSchemata $ toSchemata ct)
-    pure $ Command {ctype: ct, atoms: at}
+    pure $ Command {ctype: ct, cname: na, atoms: at}
 
 parseStyle :: ParserS (Array Command)
 parseStyle = matchAll parseCommand
 
--- Run parsers
+-- Run parsers (literal LaTeX syntax)
 runParseCommand :: String -> Either ParseError Command
 runParseCommand = flip runParser parseCommand
 

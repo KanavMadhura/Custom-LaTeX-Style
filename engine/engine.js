@@ -2326,6 +2326,9 @@ var string = function(str) {
 };
 var anyChar = /* @__PURE__ */ satisfy(/* @__PURE__ */ $$const(true));
 
+// output/Data.Char/index.js
+var toCharCode2 = /* @__PURE__ */ fromEnum(boundedEnumChar);
+
 // output/Data.CodePoint.Unicode.Internal/index.js
 var unsafeIndex2 = /* @__PURE__ */ unsafeIndex();
 var elemIndex2 = /* @__PURE__ */ elemIndex(eqInt);
@@ -18383,6 +18386,10 @@ var isSpace = function(c) {
   ;
   return uIswspace(uc);
 };
+var isDecDigit = function(c) {
+  var diff = fromEnum4(c) - toCharCode2("0") | 0;
+  return diff <= 9 && diff >= 0;
+};
 var isAlpha = function($71) {
   return uIswalpha(fromEnum4($71));
 };
@@ -18412,6 +18419,7 @@ var noneOf = function(ss) {
   });
 };
 var letter = /* @__PURE__ */ withErrorMessage(/* @__PURE__ */ satisfyCP(isAlpha))("letter");
+var digit = /* @__PURE__ */ withErrorMessage(/* @__PURE__ */ satisfyCP(isDecDigit))("digit");
 
 // output/Parse/index.js
 var $runtime_lazy3 = function(name2, moduleName, init3) {
@@ -18435,9 +18443,9 @@ var apply2 = /* @__PURE__ */ apply(applyParserT);
 var pure3 = /* @__PURE__ */ pure(applicativeParserT);
 var alt4 = /* @__PURE__ */ alt(altParserT);
 var pure1 = /* @__PURE__ */ pure(applicativeArray);
-var defer4 = /* @__PURE__ */ defer(lazyParserT);
 var applySecond2 = /* @__PURE__ */ applySecond(applyParserT);
 var applyFirst2 = /* @__PURE__ */ applyFirst(applyParserT);
+var defer4 = /* @__PURE__ */ defer(lazyParserT);
 var map22 = /* @__PURE__ */ map(functorFn);
 var sequence2 = /* @__PURE__ */ sequence(traversableArray)(applicativeParserT);
 var bind3 = /* @__PURE__ */ bind(bindParserT);
@@ -18471,13 +18479,6 @@ var KleenePlus = /* @__PURE__ */ function() {
   KleenePlus2.value = new KleenePlus2();
   return KleenePlus2;
 }();
-var Def = /* @__PURE__ */ function() {
-  function Def2() {
-  }
-  ;
-  Def2.value = new Def2();
-  return Def2;
-}();
 var NewCommand = /* @__PURE__ */ function() {
   function NewCommand2() {
   }
@@ -18506,19 +18507,12 @@ var RenewEnvironment = /* @__PURE__ */ function() {
   RenewEnvironment2.value = new RenewEnvironment2();
   return RenewEnvironment2;
 }();
-var CommandName = /* @__PURE__ */ function() {
-  function CommandName2() {
+var $$Number = /* @__PURE__ */ function() {
+  function $$Number2() {
   }
   ;
-  CommandName2.value = new CommandName2();
-  return CommandName2;
-}();
-var RawParameter = /* @__PURE__ */ function() {
-  function RawParameter2() {
-  }
-  ;
-  RawParameter2.value = new RawParameter2();
-  return RawParameter2;
+  $$Number2.value = new $$Number2();
+  return $$Number2;
 }();
 var Square = /* @__PURE__ */ function() {
   function Square2() {
@@ -18571,19 +18565,14 @@ var toSchemata = function($copy_v) {
   var $tco_done = false;
   var $tco_result;
   function $tco_loop(v) {
-    if (v instanceof Def) {
-      $tco_done = true;
-      return [new Schema(CommandName.value, One.value), new Schema(Square.value, KleeneStar.value), new Schema(RawParameter.value, KleeneStar.value), new Schema(Curly.value, One.value)];
-    }
-    ;
     if (v instanceof NewCommand) {
       $tco_done = true;
-      return [new Schema(CommandName.value, One.value), new Schema(Square.value, Zero.value), new Schema(Square.value, KleeneStar.value), new Schema(Curly.value, One.value)];
+      return [new Schema($$Number.value, Zero.value), new Schema(Square.value, KleeneStar.value), new Schema(Curly.value, One.value)];
     }
     ;
     if (v instanceof NewEnvironment) {
       $tco_done = true;
-      return [new Schema(CommandName.value, One.value), new Schema(Square.value, Zero.value), new Schema(Square.value, KleeneStar.value), new Schema(Curly.value, One.value)];
+      return [new Schema($$Number.value, Zero.value), new Schema(Square.value, KleeneStar.value), new Schema(Curly.value, One.value)];
     }
     ;
     if (v instanceof RenewCommand) {
@@ -18596,7 +18585,7 @@ var toSchemata = function($copy_v) {
       return;
     }
     ;
-    throw new Error("Failed pattern match at Parse (line 72, column 1 - line 72, column 38): " + [v.constructor.name]);
+    throw new Error("Failed pattern match at Parse (line 67, column 1 - line 67, column 38): " + [v.constructor.name]);
   }
   ;
   while (!$tco_done) {
@@ -18606,10 +18595,6 @@ var toSchemata = function($copy_v) {
   return $tco_result;
 };
 var toCommandTypeName = function(v) {
-  if (v instanceof Def) {
-    return new Tuple("\\def", Def.value);
-  }
-  ;
   if (v instanceof NewCommand) {
     return new Tuple("\\newcommand", NewCommand.value);
   }
@@ -18626,14 +18611,10 @@ var toCommandTypeName = function(v) {
     return new Tuple("\\renewenvironment", RenewEnvironment.value);
   }
   ;
-  throw new Error("Failed pattern match at Parse (line 65, column 1 - line 65, column 61): " + [v.constructor.name]);
+  throw new Error("Failed pattern match at Parse (line 61, column 1 - line 61, column 61): " + [v.constructor.name]);
 };
 var showCommandType = {
   show: function(v) {
-    if (v instanceof Def) {
-      return "\\def";
-    }
-    ;
     if (v instanceof NewCommand) {
       return "\\newcommand";
     }
@@ -18650,18 +18631,14 @@ var showCommandType = {
       return "\\renewenvironment";
     }
     ;
-    throw new Error("Failed pattern match at Parse (line 54, column 1 - line 59, column 49): " + [v.constructor.name]);
+    throw new Error("Failed pattern match at Parse (line 47, column 1 - line 51, column 49): " + [v.constructor.name]);
   }
 };
 var show2 = /* @__PURE__ */ show(showCommandType);
 var showAtom = {
   show: function(v) {
-    if (v.value0 instanceof CommandName) {
-      return "\\" + v.value1;
-    }
-    ;
-    if (v.value0 instanceof RawParameter) {
-      return "#" + v.value1;
+    if (v.value0 instanceof $$Number) {
+      return "[" + (v.value1 + "]");
     }
     ;
     if (v.value0 instanceof Square) {
@@ -18672,26 +18649,26 @@ var showAtom = {
       return "{" + (v.value1 + "}");
     }
     ;
-    throw new Error("Failed pattern match at Parse (line 48, column 1 - line 52, column 46): " + [v.constructor.name]);
+    throw new Error("Failed pattern match at Parse (line 42, column 1 - line 45, column 46): " + [v.constructor.name]);
   }
 };
 var show13 = /* @__PURE__ */ show(showAtom);
 var showCommand = {
   show: function(v) {
-    return show2(v.ctype) + fold3(map1(show13)(v.atoms));
+    return show2(v.ctype) + ("\\" + (v.cname + fold3(map1(show13)(v.atoms))));
   }
 };
 var parseSingleCommand = /* @__PURE__ */ function() {
   var psc = function(cmd) {
     return apply2(map2(Tuple.create)(string(fst(toCommandTypeName(cmd)))))(pure3(cmd));
   };
-  return alt4(psc(Def.value))(alt4(psc(NewCommand.value))(alt4(psc(RenewCommand.value))(alt4(psc(NewEnvironment.value))(psc(RenewEnvironment.value)))));
+  return alt4(psc(NewCommand.value))(alt4(psc(RenewCommand.value))(alt4(psc(NewEnvironment.value))(psc(RenewEnvironment.value))));
 }();
 var parseMultiplicity = function(v) {
   if (v instanceof Zero) {
-    var $67 = map2(pure1);
-    return function($68) {
-      return $67($$try($68));
+    var $66 = map2(pure1);
+    return function($67) {
+      return $66($$try($67));
     };
   }
   ;
@@ -18709,15 +18686,19 @@ var parseMultiplicity = function(v) {
     };
   }
   ;
-  throw new Error("Failed pattern match at Parse (line 126, column 1 - line 126, column 84): " + [v.constructor.name]);
+  throw new Error("Failed pattern match at Parse (line 115, column 1 - line 115, column 84): " + [v.constructor.name]);
 };
+var parseCommandName = /* @__PURE__ */ function() {
+  var base = applySecond2(string("\\"))(word);
+  return alt4(base)(applyFirst2(applySecond2(string("{"))(base))(string("}")));
+}();
 var matchAll = function(ps) {
   var $lazy_scanner = $runtime_lazy3("scanner", "Parse", function() {
     return defer4(function(v) {
-      return alt4(ps)(applySecond2(anyChar)($lazy_scanner(122)));
+      return alt4(ps)(applySecond2(anyChar)($lazy_scanner(111)));
     });
   });
-  var scanner = $lazy_scanner(121);
+  var scanner = $lazy_scanner(110);
   return many(scanner);
 };
 var ignoreWhitespace = function(ps) {
@@ -18727,9 +18708,9 @@ var eat = function(dictMonoid) {
   return map2($$const(mempty(dictMonoid)));
 };
 var eatString = /* @__PURE__ */ function() {
-  var $69 = eat(monoidString);
-  return function($70) {
-    return $69(string($70));
+  var $68 = eat(monoidString);
+  return function($69) {
+    return $68(string($69));
   };
 }();
 var concater = function(dictMonoid) {
@@ -18759,13 +18740,8 @@ var matchDelims = function(ld) {
   };
 };
 var parseAtom = function(v) {
-  if (v instanceof CommandName) {
-    var base = applySecond2(string("\\"))(word);
-    return map2(Atom.create(CommandName.value))(alt4(base)(applyFirst2(applySecond2(string("{"))(base))(string("}"))));
-  }
-  ;
-  if (v instanceof RawParameter) {
-    return map2(Atom.create(RawParameter.value))(applyFirst2(string("#"))(word));
+  if (v instanceof $$Number) {
+    return applyFirst2(map2(Atom.create($$Number.value))(applySecond2(string("["))(map2(singleton3)(digit))))(string("]"));
   }
   ;
   if (v instanceof Square) {
@@ -18776,7 +18752,7 @@ var parseAtom = function(v) {
     return map2(Atom.create(Curly.value))(matchDelims("{")("}"));
   }
   ;
-  throw new Error("Failed pattern match at Parse (line 133, column 1 - line 133, column 38): " + [v.constructor.name]);
+  throw new Error("Failed pattern match at Parse (line 128, column 1 - line 128, column 38): " + [v.constructor.name]);
 };
 var parseSchema = function(v) {
   return parseMultiplicity(v.value1)(parseAtom(v.value0));
@@ -18785,36 +18761,37 @@ var parseSchemata = function(v) {
   return sequence2(map1(parseSchema)(v));
 };
 var parseCommand = /* @__PURE__ */ bind3(parseSingleCommand)(function(v) {
-  return bind3(map2(join2)(parseSchemata(toSchemata(v.value1))))(function(at) {
-    return pure3({
-      ctype: v.value1,
-      atoms: at
+  return bind3(parseCommandName)(function(na) {
+    return bind3(map2(join2)(parseSchemata(toSchemata(v.value1))))(function(at) {
+      return pure3({
+        ctype: v.value1,
+        cname: na,
+        atoms: at
+      });
     });
   });
 });
 var parseStyle = /* @__PURE__ */ matchAll(parseCommand);
 var runParseStyle = /* @__PURE__ */ flip(runParser)(parseStyle);
 var toFile = /* @__PURE__ */ function() {
-  var $71 = either($$const(""))(identity(categoryFn));
-  var $72 = map3(joinWith("\n"));
-  var $73 = map3(map1(show(showCommand)));
-  return function($74) {
-    return $71($72($73(runParseStyle($74))));
+  var $70 = either($$const(""))(identity(categoryFn));
+  var $71 = map3(joinWith("\n"));
+  var $72 = map3(map1(show(showCommand)));
+  return function($73) {
+    return $70($71($72(runParseStyle($73))));
   };
 }();
 var runParseCommand = /* @__PURE__ */ flip(runParser)(parseCommand);
 export {
   Atom,
   Command,
-  CommandName,
   Curly,
-  Def,
   KleenePlus,
   KleeneStar,
   NewCommand,
   NewEnvironment,
+  $$Number as Number,
   One,
-  RawParameter,
   RenewCommand,
   RenewEnvironment,
   Schema,
@@ -18829,6 +18806,7 @@ export {
   matchDelims,
   parseAtom,
   parseCommand,
+  parseCommandName,
   parseMultiplicity,
   parseSchema,
   parseSchemata,
@@ -18836,9 +18814,6 @@ export {
   parseStyle,
   runParseCommand,
   runParseStyle,
-  showAtom,
-  showCommand,
-  showCommandType,
   toCommandTypeName,
   toFile,
   toSchemata,
