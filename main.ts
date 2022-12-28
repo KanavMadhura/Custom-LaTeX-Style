@@ -9,7 +9,7 @@ export default class MyPlugin extends Plugin {
 	async onload() {
 		await loadMathJax();
 		// This creates an icon in the left ribbon.
-		const ribbonIconEl = this.addRibbonIcon('command', 'Define Custom Math Commands', async (evt: MouseEvent) => {
+		const ribbonIconEl = this.addRibbonIcon('command', 'Load declarations in style file', async (evt: MouseEvent) => {
 			
 			const md_exists = await this.app.vault.adapter.exists(STYLE_EDITOR_PATH);
 			const template = "```\n% Insert Style Information Here\n\n% ===== PACKAGES ===== %\n\n\n\n% ===== COMMANDS ===== %\n\n\n\n% === ENVIRONMENTS === %\n\n\n\n```";

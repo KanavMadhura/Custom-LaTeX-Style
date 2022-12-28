@@ -5,7 +5,5 @@
 	"minAppVersion": "0.1.0",
 	"description": "Enables the user to define a custom global LaTeX style, using only Obsidian.",
 	"author": "Anthony Lin, Kanav Madhura",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
 	"isDesktopOnly": false
 }
