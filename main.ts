@@ -12,7 +12,7 @@ export default class MyPlugin extends Plugin {
 		const ribbonIconEl = this.addRibbonIcon('command', 'Load declarations in style file', async (evt: MouseEvent) => {
 			
 			const md_exists = await this.app.vault.adapter.exists(STYLE_EDITOR_PATH);
-			const template = "```\n% Insert Style Information Here\n\n% ===== PACKAGES ===== %\n\n\n\n% ===== COMMANDS ===== %\n\n\n\n% === ENVIRONMENTS === %\n\n\n\n```";
+			const template = "```\n% Insert Style Information Here\n\n% ===== COMMANDS ===== %\n\n\n\n% === ENVIRONMENTS === %\n\n\n\n```";
 			
 			if (!md_exists) {
 				// Create md file
