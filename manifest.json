@@ -2,7 +2,7 @@
 	"id": "custom-latex-style",
 	"name": "Custom LaTeX Style",
 	"version": "0.1.0",
-	"minAppVersion": "0.1.0",
+	"minAppVersion": "1.1.9",
 	"description": "Enables the user to define a custom global LaTeX style, using only Obsidian.",
 	"author": "Anthony Lin, Kanav Madhura",
 	"isDesktopOnly": false
